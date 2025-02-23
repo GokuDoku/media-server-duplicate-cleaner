@@ -24,20 +24,17 @@ def is_mount_point(path: Path) -> bool:
     except:
         return False
 
-def get_mountpoints() -> List[str]:
-    """Get all mounted media filesystems."""
+def get_mountpoints(media_prefix: str = '/media/') -> List[str]:
+    """
+    Get all mounted media filesystems.
+    
+    Args:
+        media_prefix: Directory prefix to consider as media mounts (default: '/media/')
+    """
     media_mounts = []
     for p in psutil.disk_partitions(all=True):
-        # Skip system paths and non-media mounts
-        if any(x in p.mountpoint for x in [
-            '/boot', '/proc', '/sys', '/dev', '/run',
-            '/snap', '/var', '/tmp', '/etc', '/usr',
-            'gvfs', 'docker'
-        ]):
-            continue
-        
-        # Only include media mounts and root paths that might contain media
-        if p.mountpoint.startswith('/media/') or p.mountpoint == '/':
+        # Only include mounts with the specified prefix
+        if p.mountpoint.startswith(media_prefix):
             try:
                 # Check if we have read permission
                 if os.access(p.mountpoint, os.R_OK):
@@ -45,7 +42,7 @@ def get_mountpoints() -> List[str]:
             except:
                 continue
     
-    return media_mounts
+    return sorted(media_mounts)  # Sort for consistent ordering
 
 def has_read_permission(path: Path) -> bool:
     """Check if we have read permission for the path."""
@@ -190,10 +187,16 @@ def scan_for_duplicates(root_paths: List[str]) -> Dict:
         return []
     
     # Scan all directories and collect video files
+    total_files_processed = 0
     for root in valid_paths:
         logger.info(f"Scanning {root}...")
         try:
-            for filepath in tqdm(list(root.rglob('*')), desc=f"Scanning {root}"):
+            # First, get list of all files
+            all_files = list(root.rglob('*'))
+            logger.info(f"Found {len(all_files)} items in {root}")
+            
+            # Process files with progress bar
+            for filepath in tqdm(all_files, desc=f"Processing {root}", unit="files"):
                 if filepath.is_file() and is_video_file(str(filepath)):
                     try:
                         if has_read_permission(filepath):
@@ -205,11 +208,14 @@ def scan_for_duplicates(root_paths: List[str]) -> Dict:
                                 folder_map[parent].append(filepath)
                             if grandparent:
                                 folder_map[grandparent].append(filepath)
+                            total_files_processed += 1
                     except (PermissionError, OSError) as e:
                         logger.error(f"Error accessing {filepath}: {e}")
         except (PermissionError, OSError) as e:
             logger.error(f"Error scanning directory {root}: {e}")
-
+    
+    logger.info(f"Total video files found: {total_files_processed}")
+    
     # Find potential duplicates
     logger.info("Analyzing folder names and structures...")
     similar_groups = find_similar_media_folders(folder_map)
@@ -231,12 +237,14 @@ def main():
                       help='Output file for the duplicate report')
     parser.add_argument('--scan-mounts', action='store_true',
                       help='Automatically scan all mounted filesystems')
+    parser.add_argument('--media-prefix', type=str, default='/media/',
+                      help='Directory prefix for media mounts (default: /media/)')
     
     args = parser.parse_args()
     
     scan_paths = []
     if args.scan_mounts:
-        scan_paths.extend(get_mountpoints())
+        scan_paths.extend(get_mountpoints(args.media_prefix))
         logger.info(f"Found mount points: {', '.join(scan_paths)}")
     
     if args.directories:
