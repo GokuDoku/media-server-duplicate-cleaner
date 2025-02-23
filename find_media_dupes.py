@@ -234,7 +234,7 @@ def main():
     parser = argparse.ArgumentParser(description='Find duplicate media files across directories')
     parser.add_argument('directories', nargs='*', help='Directories to scan')
     parser.add_argument('--output', type=str, default='duplicate_report.txt',
-                      help='Output file for the duplicate report')
+                      help='Output file path for the duplicate report (default: ./duplicate_report.txt)')
     parser.add_argument('--scan-mounts', action='store_true',
                       help='Automatically scan all mounted filesystems')
     parser.add_argument('--media-prefix', type=str, default='/media/',
