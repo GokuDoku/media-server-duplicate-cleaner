@@ -25,9 +25,27 @@ def is_mount_point(path: Path) -> bool:
         return False
 
 def get_mountpoints() -> List[str]:
-    """Get all mounted filesystems."""
-    return [p.mountpoint for p in psutil.disk_partitions(all=True)
-            if not any(x in p.mountpoint for x in ['/boot', '/proc', '/sys', '/dev'])]
+    """Get all mounted media filesystems."""
+    media_mounts = []
+    for p in psutil.disk_partitions(all=True):
+        # Skip system paths and non-media mounts
+        if any(x in p.mountpoint for x in [
+            '/boot', '/proc', '/sys', '/dev', '/run',
+            '/snap', '/var', '/tmp', '/etc', '/usr',
+            'gvfs', 'docker'
+        ]):
+            continue
+        
+        # Only include media mounts and root paths that might contain media
+        if p.mountpoint.startswith('/media/') or p.mountpoint == '/':
+            try:
+                # Check if we have read permission
+                if os.access(p.mountpoint, os.R_OK):
+                    media_mounts.append(p.mountpoint)
+            except:
+                continue
+    
+    return media_mounts
 
 def has_read_permission(path: Path) -> bool:
     """Check if we have read permission for the path."""
