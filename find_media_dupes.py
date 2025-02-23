@@ -136,6 +136,7 @@ def find_similar_media_folders(folder_map: Dict[str, List[Path]]) -> List[Dict]:
                 if ratio > 0.9:
                     current_group['similar_folders'].append(folder2)
                     current_group['similarity_scores'].append(ratio)
+                    current_group['files'].extend(folder_map[folder2])
                     processed.add(folder2)
         
         if current_group['similar_folders']:
@@ -251,13 +252,9 @@ def main():
             
             for folder, score in zip(group['similar_folders'], group['similarity_scores']):
                 f.write(f"\nSimilar Folder (similarity: {score:.2f}): {folder}\n")
-                for file in folder_map[folder]:
-                    try:
-                        size = format_size(file.stat().st_size)
-                        f.write(f"  {file} ({size})\n")
-                    except:
-                        f.write(f"  {file}\n")
             
+            f.write("\n")
+    
     logger.info(f"Report written to {args.output}")
 
 if __name__ == '__main__':
