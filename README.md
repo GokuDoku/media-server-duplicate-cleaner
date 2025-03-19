@@ -1,6 +1,21 @@
-# Media Duplicate Finder and Cleanup
+# Media Server Duplicate Cleaner 🧹💾
 
-A comprehensive suite of tools for finding and safely cleaning up duplicate media folders on your media server. This project helps you reclaim disk space by identifying and removing duplicate copies of movies, TV shows, and other media content while preserving your primary media library.
+A comprehensive toolkit for automatically detecting and safely removing duplicate media files across your Plex, Jellyfin, or Emby media server. This intelligent solution integrates with Sonarr and Radarr to identify your primary media library while finding redundant copies of movies, TV shows, and videos spread across multiple drives and directories.
+
+![GitHub License](https://img.shields.io/github/license/GokuDoku/media-server-duplicate-cleaner)
+![GitHub last commit](https://img.shields.io/github/last-commit/GokuDoku/media-server-duplicate-cleaner)
+![Python Version](https://img.shields.io/badge/python-3.6%2B-blue)
+
+## Why Use Media Server Duplicate Cleaner?
+
+📊 **Reclaim Disk Space** - Eliminate redundant media files and free up valuable storage
+🔍 **Smart Detection** - Identify true duplicates while preserving your organized library
+🛡️ **Safety First** - Multiple protection mechanisms prevent accidental deletion
+🔄 **Media Server Integration** - Seamless integration with Sonarr and Radarr
+⚙️ **Platform Support** - Works with Plex, Jellyfin, Emby and other media server platforms
+🧠 **Intelligent Matching** - Handles different naming conventions and folder structures
+📝 **Detailed Logging** - Comprehensive logs and reports of all operations
+🚀 **Docker Support** - Easy setup in containerized environments
 
 ## Features
 
@@ -23,8 +38,8 @@ A comprehensive suite of tools for finding and safely cleaning up duplicate medi
 
 1. Clone the repository to your media server:
    ```
-   git clone https://github.com/yourusername/media-duplicate-finder.git
-   cd media-duplicate-finder
+   git clone https://github.com/GokuDoku/media-server-duplicate-cleaner.git
+   cd media-server-duplicate-cleaner
    ```
 
 2. Install the required Python packages:
