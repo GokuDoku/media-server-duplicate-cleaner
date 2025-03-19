@@ -1,0 +1,15 @@
+{
+    "sonarr": {
+        "url": "http://localhost:8989",
+        "api_key": "your_sonarr_api_key_here"
+    },
+    "radarr": {
+        "url": "http://localhost:7878", 
+        "api_key": "your_radarr_api_key_here"
+    },
+    "advanced": {
+        "min_similarity_threshold": 0.75,
+        "matching_depth": 2,
+        "use_file_count_validation": true
+    }
+} 

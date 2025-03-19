@@ -25,6 +25,7 @@ venv/
 ENV/
 env/
 .env/
+.env
 
 # IDE
 .idea/
@@ -36,3 +37,9 @@ env/
 duplicate_report.txt
 cleanup_script.sh
 config.json 
+
+# Additional entries for cleanup logs and temporary files
+cleanup_session_*.log
+cleanup_summary_*.txt
+*_duplicate_report*.txt
+archive/ 

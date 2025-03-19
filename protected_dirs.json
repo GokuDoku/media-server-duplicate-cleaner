@@ -1,0 +1,10 @@
+{
+  "protected_dirs": [
+    "/media/Movies",
+    "/media/Television",
+    "/media/TV",
+    "/mnt/media/Movies",
+    "/mnt/storage/TV"
+  ],
+  "comment": "Add your media root folders here to prevent them from being treated as duplicates. These directories and their immediate subdirectories will not be deleted by the cleanup script."
+} 
